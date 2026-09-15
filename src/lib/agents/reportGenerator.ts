@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { getAnthropicClient, CLINICAL_AGENT_MODEL } from '../anthropic';
 import type { TranscriptSegment } from '../transcription';
 import type { ClinicalAnalysis } from './clinicalAnalysis';
+import { parseModelJson } from '../jsonUtils';
 
 const ReportSchema = z.object({
   subjective: z.string(),
@@ -28,7 +29,8 @@ Regras:
 - "Plano": condutas/próximos passos mencionados ou sugeridos na consulta.
 - Escreva em português, tom clínico e objetivo.
 
-Responda SOMENTE em JSON válido:
+Responda SOMENTE com o objeto JSON abaixo, sem cercas de markdown (não use
+\`\`\`), sem texto antes ou depois:
 { "subjective": string, "objective": string, "assessment": string, "plan": string }`;
 
 function formatTranscript(segments: TranscriptSegment[]): string {
@@ -79,5 +81,5 @@ export async function generateSoapReport(
     throw new Error('Resposta do agente de relatório não contém texto.');
   }
 
-  return ReportSchema.parse(JSON.parse(textBlock.text));
+  return ReportSchema.parse(parseModelJson(textBlock.text));
 }

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { getAnthropicClient, CLINICAL_AGENT_MODEL } from '../anthropic';
 import type { TranscriptSegment } from '../transcription';
 import type { ClinicalAnalysis } from './clinicalAnalysis';
+import { parseModelJson } from '../jsonUtils';
 
 /**
  * Clinical Challenger — auditor adversarial que revisa a saída do agente de
@@ -61,7 +62,8 @@ overconfidence, não filtrar hipóteses razoáveis só por serem incertas — da
 insuficientes é uma nota válida, não motivo para marcar como não fundamentada
 se a hipótese foi corretamente apresentada como incerta.
 
-Responda SOMENTE em JSON válido:
+Responda SOMENTE com o objeto JSON abaixo, sem cercas de markdown (não use
+\`\`\`), sem texto antes ou depois:
 {
   "audited_hypotheses": [{ "condition": string, "grounded": boolean, "audited_confidence": "baixa"|"moderada"|"alta", "audit_note": string }],
   "needs_human_review": boolean,
@@ -112,7 +114,7 @@ export async function runClinicalChallenger(
     throw new Error('Resposta do Clinical Challenger não contém texto.');
   }
 
-  return ChallengerSchema.parse(JSON.parse(textBlock.text));
+  return ChallengerSchema.parse(parseModelJson(textBlock.text));
 }
 
 /**

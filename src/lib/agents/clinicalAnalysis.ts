@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { getAnthropicClient, CLINICAL_AGENT_MODEL } from '../anthropic';
 import { searchClinicalEvidence, type EvidenceResult } from '../skb';
 import type { TranscriptSegment } from '../transcription';
+import { parseModelJson } from '../jsonUtils';
 
 const AnalysisSchema = z.object({
   hypotheses: z
@@ -41,7 +42,8 @@ diagnóstico fechado. Com base na transcrição parcial da consulta fornecida:
 
 Seja conservador: se a transcrição ainda tem pouca informação, diga isso
 explicitamente nas hipóteses (ex. "dados insuficientes para hipótese X") em vez
-de inventar detalhes que não foram ditos. Responda SOMENTE em JSON válido no
+de inventar detalhes que não foram ditos. Responda SOMENTE com o objeto JSON
+abaixo, sem cercas de markdown (não use \`\`\`), sem texto antes ou depois, no
 formato:
 {
   "hypotheses": [{ "condition": string, "rationale": string, "confidence": "baixa"|"moderada"|"alta" }],
@@ -91,7 +93,7 @@ export async function runClinicalAnalysis(
     throw new Error('Resposta do agente de análise não contém texto.');
   }
 
-  const parsed = AnalysisSchema.parse(JSON.parse(textBlock.text));
+  const parsed = AnalysisSchema.parse(parseModelJson(textBlock.text));
 
   // Busca evidência real no SKB para cada query sugerida pelo agente.
   const evidenceResults = await Promise.all(
