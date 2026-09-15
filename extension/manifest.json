@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "AGENTE STAFF",
+  "version": "0.1.0",
+  "description": "Assistente de IA para teleatendimentos: transcreve, analisa e sugere hipóteses/perguntas em uma janela flutuante durante a consulta.",
+  "permissions": ["tabCapture", "offscreen", "storage", "activeTab", "scripting"],
+  "host_permissions": ["http://localhost:3000/*", "https://*/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AGENTE STAFF"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["overlay.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
