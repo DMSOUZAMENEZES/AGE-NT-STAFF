@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # AGENTE STAFF — MVP (Fase 1)
 
 Scaffold inicial do assistente de IA para teleatendimentos médicos, implementando
@@ -102,6 +101,3 @@ médico/paciente, transformar o rubric do Challenger em cálculo determinístico
 no backend, ampliar a cobertura do SKB, e decidir se vale a pena também um
 app desktop para cobrir teleatendimentos fora do navegador (Fase 4: piloto
 real com Dra. Sinara).
-=======
-# AGE-NT-STAFF
->>>>>>> 448e5b5d52f4a5b043a3e570611de1ab9724730d
